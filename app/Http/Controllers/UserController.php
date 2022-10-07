@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
-
 class UserController extends Controller
 {
 
