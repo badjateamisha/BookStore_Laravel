@@ -138,4 +138,46 @@ class BookController extends Controller
       
     }
 
+    //API function to search book using id/name/author
+    public function searchBook(Request $request)
+    {
+        $request->validate([
+            'data' => 'required'
+        ]);
+    
+        $response = DB::table('books')->where('name', $request->data)->
+                                    orWhere('id', $request->data)->
+                                    orWhere('author', $request->data)->get();
+        if($response){
+            return response()->json(['success' => $response],201);
+        }
+        else{
+           return response()->json(['message'=>'No book Found with the entered Value'],401);
+        }
+    }
+
+       //API Function to display Books in ascending order
+
+    public function sorting_Price_LowToHigh(){
+        $books = Book::select('*')->orderBy("price", "asc")->get();
+        
+        if($books){
+            return response()->json(['success' => $books],201);
+        }
+        else{
+           return response()->json(['message'=>'No book Found to Display'],401);
+        }
+    }
+
+        //API Function to display Books in descending order
+
+    public function sorting_Price_HighToLow(){
+        $books = Book::select('*')->orderBy("price", "desc")->get();
+        if($books){
+            return response()->json(['success' => $books],201);
+        }
+        else{
+           return response()->json(['message'=>'No book Found to Display'],401);
+        }
+    }
 }
