@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 
 class BookController extends Controller
 {
@@ -24,30 +25,31 @@ class BookController extends Controller
         ]);
 
 
-        $book = Book::create([
-
-            'name' => $request->name,
-            'description' => $request->description,
-            'author' => $request->author,
-            'image' => $request->image,
-            'price' => $request->price,
-            'quantity' => $request->quantity
-
-        ]);
+        $getUser = $request->user()->id;
+        $book = new Book();
+        $book->user_id = $getUser;
+        $book->name = $request->name;
+        $book->description = $request->description;
+        $book->author = $request->author;
+        $book->image = $request->image;
+        $book->price = $request->price;
+        $book->quantity = $request->quantity;
+    
         
 
-        return response()->json([
-            'message' => 'Book Added Successfully',
-            'book' => $book
-        ], 200);
-
+        $book->save();
+        $response = $book;
+        return response()->json(['message' => 'Book Added Successfully','book' => $book],201);
+        //Log::channel('custom')->info("Book is added sucessfully");
     }
 
     // API Function to display Book
     public function displayAllBooks()
     {
         $book = Book::all();
+
         return response()->json(['success' => $book]);
+
     }
 
 
