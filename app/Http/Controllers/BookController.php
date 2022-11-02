@@ -40,30 +40,41 @@ class BookController extends Controller
         $book->save();
         $response = $book;
         return response()->json(['message' => 'Book Added Successfully','book' => $book],201);
-        //Log::channel('custom')->info("Book is added sucessfully");
+        Log::channel('custom')->info("Book is added sucessfully");
     }
 
     // API Function to display Book
     public function displayAllBooks()
     {
-        $book = Book::all();
-
-        return response()->json(['success' => $book]);
+    $book = Book::all();
+    if($book)
+    {
+        return response()->json(['success' => $book],201);
+        Log::channel('custom')->info("Books Displayed successfully");
 
     }
+    else
+    {
+         return response()->json(['Message' => "No Book found to display"],401);
+        Log::channel('custom')->info("No Book found to display");
+    }
+}
 
 
     //API Function to display Book by ID
-    public function displayBookByID($id)
+    public function displayBookById($id)
     {
         $book = Book::find($id);
         if($book)
         {
-            return response()->json(['success' => $book]);
+            return response()->json(['success' => $book],201);
+            Log::channel('custom')->info("Book Displayed successfully based on ID");
         }
         else
         {
-            return response()->json(['Message' => "No Book found with that ID"]);
+            return response()->json(['Message' => "No Book found with that ID"],401);
+            Log::channel('custom')->info("No Book found with that ID");
+
         }
     }
 
@@ -95,10 +106,12 @@ class BookController extends Controller
             
             $book ->update();
             return response()->json(['message'=>'book Updated Successfully'],200);
+            Log::channel('custom')->info("Book Updated Successfully");
         }
         else
         {
             return response()->json(['message'=>'No book Found with that ID'],404);
+            Log::channel('custom')->info("No book Found with that ID");
         }
       
     }
@@ -111,11 +124,13 @@ class BookController extends Controller
         if($book)
         {
             $book ->delete();
-            return response()->json(['message'=>'Data Deleted Successfully'],200);
+            return response()->json(['message'=>'Data Deleted Successfully'],201);
+            Log::channel('custom')->info("Data Deleted Successfully");
         }
         else
         {
-            return response()->json(['message'=>'No Book Found with that ID'],404);
+            return response()->json(['message'=>'No Book Found with that ID'],401);
+            Log::channel('custom')->info("No Book found with that ID");
         }
     }
 
@@ -131,11 +146,13 @@ class BookController extends Controller
         $response = DB::table('books')->where('id', $request->id)->update(['quantity'=>$request->quantity]);
         if($response)
         {            
-            return response()->json(['message'=>'Quantity of Books Updated Successfully'],200);
+            return response()->json(['message'=>'Quantity of Books Updated Successfully'],201);
+            Log::channel('custom')->info("Quantity of Books Updated Successfully");
         }
         else
         {
-            return response()->json(['message'=>'No book Found with that ID'],404);
+            return response()->json(['message'=>'No book Found with that ID'],401);
+            Log::channel('custom')->info("No Book found with that ID");
         }
       
     }
@@ -152,9 +169,11 @@ class BookController extends Controller
                                     orWhere('author', $request->data)->get();
         if($response){
             return response()->json(['success' => $response],201);
+            Log::channel('custom')->info("success");
         }
         else{
            return response()->json(['message'=>'No book Found with the entered Value'],401);
+           Log::channel('custom')->info("No book Found with the entered Value");
         }
     }
 
@@ -165,9 +184,11 @@ class BookController extends Controller
         
         if($books){
             return response()->json(['success' => $books],201);
+            Log::channel('custom')->info("success");
         }
         else{
            return response()->json(['message'=>'No book Found to Display'],401);
+           Log::channel('custom')->info("No book Found to Display");
         }
     }
 
@@ -177,9 +198,11 @@ class BookController extends Controller
         $books = Book::select('*')->orderBy("price", "desc")->get();
         if($books){
             return response()->json(['success' => $books],201);
+            Log::channel('custom')->info("success");
         }
         else{
            return response()->json(['message'=>'No book Found to Display'],401);
+           Log::channel('custom')->info("No book Found to Display");
         }
     }
 }

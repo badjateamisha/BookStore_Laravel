@@ -12,7 +12,10 @@ use App\Http\Controllers\CartController;
 use App\Models\Cart;
 use App\Http\Controllers\WishlistController;
 use App\Models\Wishlist;
-
+use App\Http\Controllers\AddressController;
+use App\Models\Address;
+use App\Http\Controllers\OrderController;
+use App\Models\order;
 
 
 
@@ -64,5 +67,14 @@ Route::Delete('removeBookFromCart',[CartController::class, 'removeBookFromCart']
 Route::post('addBookToWishlist', [WishlistController::class, 'addBookToWishlist']);
 Route::get('displayBooksFromWishlists', [WishlistController::class, 'displayBooksFromWishlists']);
 Route::delete('removeBookFromWishlists', [WishlistController::class, 'removeBookFromWishlists']);
+
+Route::post('addAddress', [AddressController::class, 'addAddress']);
+Route::post('updateAddressById', [AddressController::class, 'update_Address_Id']);
+Route::get('displayAllAddresses', [AddressController::class, 'display_AllAddresses']);
+Route::delete('deleteAddressByID', [AddressController::class, 'delete_Address_ID']);
+
+Route::get('getBookById', [OrderController::class, 'getBookById']);
+Route::post('placeOrder', [OrderController::class, 'placeOrder']);
+Route::post('cancelOrder', [OrderController::class, 'cancelOrder']);
     
 });

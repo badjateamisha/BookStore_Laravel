@@ -11,8 +11,7 @@ use Illuminate\support\Facades\Auth;
 use Illuminate\support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
-
-
+use Illuminate\Support\Facades\Log;
 
 
 class PasswordController extends Controller
@@ -29,10 +28,11 @@ class PasswordController extends Controller
         $result = Auth::attempt(['email' => $request->email, 'password' => $request->password]);
         if($result){
             User::where('id', $request->userId)->update(['password' => Hash::make($request->newPassword)]);
-            return response()->json(['message'=>"password updated successfully", 'status'=>200]);
+            return response()->json(['message'=>"Password updated successfully", 'status'=>200]);
             
         }
         else{
+            Log::channel('custom')->error("You have Entered the wrong password");
             return response()->json(['message'=>"Check your old password", 'status'=>400]);
         }
     }
@@ -51,7 +51,7 @@ class PasswordController extends Controller
         $user = User::where('email', $email)->first();
         if (!$user) {
             return response()->json(['Message' => "Email does not exists", 'status' => 404]);
-            
+            Log::channel('custom')->error("Email does not exists");
         } 
         else {
 
@@ -87,13 +87,14 @@ class PasswordController extends Controller
         $passwordReset = PasswordReset::where('token', $request->token)->first();
         if(!$passwordReset){
             return response()->json(['message' => "Token is invalid "]);
+            Log::channel('custom')->error("Token is invalid");
         }
 
         $user = User::where('email', $passwordReset->email)->first();
         $user->password = Hash::make($request->password);
 
         PasswordReset::where('email', $request->email)->delete();
-        return "password Reset successfull";
+        return "Password Reset successfull";
       
     }
 }
